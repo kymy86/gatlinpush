@@ -10,4 +10,4 @@ APPLICATION_HOT=0.0.0.0
 APPLICATION_APPLICATION_ROOT=/
 AWS_ACCESS_KEY=my_aws_access_key
 AWS_SECRET_ACCESS_KEY=my_aws_secret_access_key
-AWS_REGION=my_aws_region
+AWS_REGION=us-east-1
