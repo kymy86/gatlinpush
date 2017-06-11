@@ -1,0 +1,25 @@
+sudo: required
+services:
+  - docker
+language:
+  - python
+python:
+  - "3.6"
+env:
+  DOCKER_COMPOSE_VERSION: 1.11.2
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install docker-engine
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+before_script:
+  - mv env_example .env
+  - sudo /etc/init.d/postgresql stop
+  - docker-compose up --build -d
+  - sleep 15
+script:
+  - docker-compose run --rm gatlinpush python -m unittest
+after_success:
+  - docker-compose down
