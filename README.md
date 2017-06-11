@@ -25,3 +25,5 @@ Micro service to manage and send push through
 ## Database connect
 
 `docker exec -it gatlinpush_postgresdb_1 psql dbname dbuser`
+
+[Amazon AWS SNS]:(http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html)
