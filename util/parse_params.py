@@ -20,7 +20,10 @@ def parse_params(*arguments):
             parser = reqparse.RequestParser()
             for argument in arguments:
                 parser.add_argument(argument)
-            parser.parse_args()
+            if len(kwargs) != 0:
+                kwargs.update(parser.parse_args())
+            else:
+                parser.parse_args()
             return func(*args, **kwargs)
         return resource_verb
     return parse

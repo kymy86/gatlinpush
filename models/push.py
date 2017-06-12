@@ -1,4 +1,5 @@
 from datetime import datetime
+import uuid
 from . import db
 from .abc import BaseModel
 
@@ -6,6 +7,7 @@ class PushManager(db.Model, BaseModel):
 
     __tablename__ = 'push_manager'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(db.String(36))
     android_key = db.Column(db.String(256), unique=True)
     app_name = db.Column(db.String(100))
     sns_arn = db.Column(db.String(512))
@@ -16,6 +18,7 @@ class PushManager(db.Model, BaseModel):
         self.android_key = android_key
         self.app_name = app_name
         self.sns_arn = sns_arn
+        self.uuid = str(uuid.uuid4())
 
 class Push(db.Model, BaseModel):
 

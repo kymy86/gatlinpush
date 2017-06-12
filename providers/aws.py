@@ -18,6 +18,7 @@ class AwsProvider(Provider):
         re1 = re.compile(r"[^a-zA-Z0-9\-_\.]+")
         return re1.sub("-", app_name)
 
+    @property
     def provider_name(self):
         return "AWS"
 
