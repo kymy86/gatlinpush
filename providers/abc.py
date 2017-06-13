@@ -11,16 +11,8 @@ class Provider(metaclass=ABCMeta):
     def set_ios_platoform(self):
         pass
 
-    @property
-    def app_name(self):
-        pass
-
-    @app_name.setter
-    def app_name(self, app_name):
-        self._app_name_setter(app_name)
-
     @abstractmethod
-    def _app_name_setter(self, app_name):
+    def delete_platform(self, platform_id):
         pass
 
     @property

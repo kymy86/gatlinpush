@@ -21,6 +21,18 @@ class PushManagerResource(Resource):
     for a given app
     """
 
+    def get(self, uuid):
+        try:
+            pm = PushManagerRepo(AwsProvider(None))
+            push_app = pm.get(uuid)
+            response = jsonify(push_app.json)
+            response.status_code = 200
+        except PushManagerException as e:
+            response = jsonify({'error':e.message})
+            response.status_code = 400
+
+        return response
+
     @parse_params(
         Argument(
             'key',
@@ -35,13 +47,46 @@ class PushManagerResource(Resource):
             help="Application name missing"
         )
     )
-    def post(self):
+    def post(self, key, name):
         req = request.get_json()
         try:
-            pm = PushManagerRepo(AwsProvider(req['name']))
-            push_app = pm.create(req['key'])
+            pm = PushManagerRepo(AwsProvider(name))
+            push_app = pm.create(key)
             response = jsonify(push_app.json)
             response.status_code = 201
+        except PushManagerException as e:
+            response = jsonify({"error":e.message})
+            response.status_code = 400
+
+        return response
+
+    @parse_params(
+        Argument(
+            'key',
+            location='json',
+            required=True,
+            help='Firebase key missing'
+        )
+    )
+    def put(self, uuid, key):
+        req = request.get_json()
+        try:
+            pm = PushManagerRepo(AwsProvider(None))
+            push_app = pm.update(uuid, key)
+            response = jsonify(push_app.json)
+            response.status_code = 200
+        except PushManagerException as e:
+            response = jsonify({"error":e.message})
+            response.status_code = 400
+
+        return response
+
+    def delete(self, uuid):
+        try:
+            pm = PushManagerRepo(AwsProvider(None))
+            pm.delete(uuid)
+            response = jsonify({})
+            response.status_code = 200
         except PushManagerException as e:
             response = jsonify({"error":e.message})
             response.status_code = 400

@@ -13,6 +13,7 @@ class PushManager(db.Model, BaseModel):
     sns_arn = db.Column(db.String(512))
     manager = db.relationship('Push')
 
+    to_json_filter = ['id']
 
     def __init__(self, android_key, app_name, sns_arn):
         self.android_key = android_key

@@ -7,5 +7,6 @@ from resources import PushResource, PushManagerResource
 PUSH_BLUEPRINT = Blueprint('push', __name__)
 Api(PUSH_BLUEPRINT).add_resource(
     PushManagerResource,
-    '/push/manager/'
+    '/push/manager/',
+    '/push/manager/<string:uuid>'
 )
