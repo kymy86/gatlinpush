@@ -1,15 +1,11 @@
 import re
 from models import (
     Push,
-    PushManager
+    PushManager,
 )
 from util.exceptions import PushManagerException
 from providers.abc import Provider
 from sqlalchemy.exc import IntegrityError
-from config import logging
-
-class PushRepo:
-    pass
 
 class PushManagerRepo:
 
@@ -26,15 +22,18 @@ class PushManagerRepo:
         """
         Get a push manager
         """
-        try:
-            pmanager = PushManager.query.filter_by(
-                uuid=uuid
-            ).one_or_none()
-            if pmanager is None:
-                raise PushManagerException("App not exist")
-            return pmanager
-        except PushManagerException as exception:
-            raise exception
+        pmanager = PushManager.query.filter_by(
+            uuid=uuid
+        ).one_or_none()
+        if pmanager is None:
+            raise PushManagerException("App not exist")
+        return pmanager
+
+    def get_all(self):
+        """
+        Get all the push manager
+        """
+        return PushManager.query.all()
 
 
     def create(self, android_key):
@@ -61,7 +60,6 @@ class PushManagerRepo:
             ).one_or_none()
             if pmanager is None:
                 raise PushManagerException("App not exist")
-            logging.debug(pmanager.app_name)
             self._provider.app_name = pmanager.app_name
             sns_arn = self._provider.set_android_platform(android_key)
             pmanager.android_key = android_key

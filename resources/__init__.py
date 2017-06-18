@@ -1,1 +1,2 @@
-from .push import PushResource, PushManagerResource
+from .push import PushResource, PushManagerResource, PushManagerResourceList
+from .installation import InstallationResource, InstallationResourceList

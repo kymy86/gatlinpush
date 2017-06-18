@@ -15,6 +15,18 @@ class PushResource(Resource):
     def get():
         return "hello"
 
+class PushManagerResourceList(Resource):
+    """
+    Get more than one push manager
+    """
+    def get(self):
+        try:
+            pm = PushManagerRepo(AwsProvider(None))
+            push_app = pm.get_all()
+            return {"data": [x.json for x in push_app]}, 200
+        except PushManagerException as e:
+            return {"error":e.message}, 404
+
 class PushManagerResource(Resource):
     """
     Manager push manager creation
@@ -52,13 +64,9 @@ class PushManagerResource(Resource):
         try:
             pm = PushManagerRepo(AwsProvider(name))
             push_app = pm.create(key)
-            response = jsonify(push_app.json)
-            response.status_code = 201
+            return push_app.json, 201
         except PushManagerException as e:
-            response = jsonify({"error":e.message})
-            response.status_code = 400
-
-        return response
+            return {"error":e.message}, 400
 
     @parse_params(
         Argument(
@@ -76,8 +84,7 @@ class PushManagerResource(Resource):
             response = jsonify(push_app.json)
             response.status_code = 200
         except PushManagerException as e:
-            response = jsonify({"error":e.message})
-            response.status_code = 400
+            return {"error":e.message}, 400
 
         return response
 
@@ -85,10 +92,6 @@ class PushManagerResource(Resource):
         try:
             pm = PushManagerRepo(AwsProvider(None))
             pm.delete(uuid)
-            response = jsonify({})
-            response.status_code = 200
+            return {}, 202
         except PushManagerException as e:
-            response = jsonify({"error":e.message})
-            response.status_code = 400
-
-        return response
+            return {"error":e.message}, 400

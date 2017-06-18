@@ -2,6 +2,7 @@ from datetime import datetime
 from weakref import WeakValueDictionary
 from sqlalchemy import inspect
 from sqlalchemy.orm import aliased
+from sqlalchemy.orm.collections import InstrumentedList
 
 from . import db
 
@@ -33,12 +34,17 @@ class BaseModel():
 
     @property
     def json(self):
-        return {
-            column: value
-            if not isinstance(value, datetime) else value.strftime('%Y-%m-%d')
-            for column, value in self._to_dict().items()
-            if column not in self.to_json_filter
-        }
+
+        json_obj = {}
+        for column, value in self._to_dict().items():
+            if column not in self.to_json_filter:
+                if isinstance(value, datetime):
+                    json_obj[column] = value.strftime('%Y-%m-%d')
+                elif isinstance(value, InstrumentedList):
+                    json_obj[column] = [v.json for v in value]
+                else:
+                    json_obj[column] = value
+        return json_obj
 
     def _to_dict(self):
         return {

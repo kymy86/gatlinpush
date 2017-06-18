@@ -48,7 +48,7 @@ class TestPushManager(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 201)
         response_json = json.loads(response.data.decode('utf-8'))
-        self.assertTrue('id' in response_json)
+        self.assertTrue('uuid' in response_json)
 
     @mock_sns
     def test_update(self):
@@ -75,7 +75,7 @@ class TestPushManager(unittest.TestCase):
         """
         pm = self.__create_push_manager()
         response = self.client.delete('/push/manager/'+pm['uuid'])
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 202)
 
     def test_create_with_no_key(self):
         """
