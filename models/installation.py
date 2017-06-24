@@ -12,13 +12,15 @@ class Installation(db.Model, BaseModel):
     date = db.Column(db.DateTime, default=datetime.utcnow())
     device_id = db.Column(db.String(64))
     uuid = db.Column(db.String(36))
+    endpoint_arn = db.Column(db.String(512))
     __table_args__ = (
-        db.UniqueConstraint('app_id', 'device_id', name='_one_instal_ix'),
+        db.UniqueConstraint('app_id', 'device_id', name='_one_install_ix'),
     )
 
     to_json_filter = ['id']
 
-    def __init__(self, app_id, device_id):
+    def __init__(self, app_id, device_id, endpoint_arn):
         self.app_id = app_id
         self.device_id = device_id
         self.uuid = str(uuid.uuid4())
+        self.endpoint_arn = endpoint_arn

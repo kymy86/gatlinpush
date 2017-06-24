@@ -137,7 +137,7 @@ class TestPushManager(unittest.TestCase):
             })
         )
         response_j2 = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 404)
         self.assertEqual(response_j2['error'], 'App not exist')
 
     @mock_sns

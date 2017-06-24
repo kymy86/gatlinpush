@@ -1,10 +1,10 @@
 from flask_restful import Resource
 from flask_restful.reqparse import Argument
-from flask.json import jsonify
 
 from util import parse_params
 from repositories import InstallationRepo
-from util.exceptions import InstallationException
+from util.exceptions import GatlinException
+from providers.aws import AwsProvider
 
 
 class InstallationResourceList(Resource):
@@ -17,7 +17,7 @@ class InstallationResourceList(Resource):
         try:
             installation = InstallationRepo.get_by_deviceid(deviceid)
             return {'data':[i.json for i in installation]}, 200
-        except InstallationException as e:
+        except GatlinException as e:
             return {"error":e.message}, e.status
 
     def delete(self, deviceid):
@@ -26,9 +26,10 @@ class InstallationResourceList(Resource):
         Delete all installation
         """
         try:
-            InstallationRepo.delete_by_deviceid(deviceid)
+            irepo = InstallationRepo(AwsProvider(None))
+            irepo.delete_by_deviceid(deviceid)
             return {}, 202
-        except InstallationException as e:
+        except GatlinException as e:
             return {"error":e.message}, e.status
 
 class InstallationResource(Resource):
@@ -42,7 +43,7 @@ class InstallationResource(Resource):
         try:
             installation = InstallationRepo.get(uuid)
             return installation.json, 200
-        except InstallationException as e:
+        except GatlinException as e:
             return {"error":e.message}, e.status
 
     @parse_params(
@@ -69,10 +70,11 @@ class InstallationResource(Resource):
         Create a  new installation
         """
         try:
-            installation = InstallationRepo.create(device_id, app_id)
+            irepo = InstallationRepo(AwsProvider(None))
+            installation = irepo.create(device_id, app_id)
             return installation.json, 201
-        except InstallationException as e:
-            return {"error": e.message}, e.status
+        except GatlinException as e:
+            return {"error":e.message}, e.status
 
     def delete(self, uuid):
         """
@@ -80,8 +82,9 @@ class InstallationResource(Resource):
         Delete a particular installation
         """
         try:
-            InstallationRepo.delete(uuid)
+            irepo = InstallationRepo(AwsProvider(None))
+            irepo.delete(uuid)
             return {}, 202
-        except InstallationException as e:
-            return {"error": e.message}, e.status
+        except GatlinException as e:
+            return {"error":e.message}, e.status
         

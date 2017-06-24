@@ -1,7 +1,7 @@
 import re
-from config import sns_client
+from config import sns_client, logging
 from botocore.exceptions import ClientError
-from util.exceptions import PushManagerException
+from util.exceptions import GatlinException
 from .abc import Provider
 
 class AwsProvider(Provider):
@@ -45,7 +45,7 @@ class AwsProvider(Provider):
             )
             return response['PlatformApplicationArn']
         except ClientError as e:
-            raise PushManagerException(e.response['Error']['Message'])
+            raise GatlinException(e.response['Error']['Message'], 400)
 
     def delete_platform(self, platform_id):
 
@@ -54,11 +54,30 @@ class AwsProvider(Provider):
                 PlatformApplicationArn=platform_id
             )
         except ClientError as e:
-            raise PushManagerException(e.response['Error']['Message'])
+            raise GatlinException(e.response['Error']['Message'], 400)
+
+    def create_endpoint(self, device_id, platform_id):
+
+        try:
+            response = sns_client.create_platform_endpoint(
+                PlatformApplicationArn=platform_id,
+                Token=device_id
+            )
+            return response['EndpointArn']
+        except ClientError as err:
+            raise GatlinException(err.response['Error']['Message'], 400)
 
     def _app_name_setter(self, app_name):
         self._app_name = self.__clean_param(app_name)
 
     def set_ios_platoform(self):
         pass
+
+    def delete_endpoint(self, platform_id):
+        try:
+            response = sns_client.delete_endpoint(
+                EndpointArn=platform_id
+            )
+        except ClientError as e:
+            raise GatlinException(e.response['Error']['Message'], 400)
     

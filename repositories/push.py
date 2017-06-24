@@ -3,9 +3,20 @@ from models import (
     Push,
     PushManager,
 )
-from util.exceptions import PushManagerException
+from util.exceptions import GatlinException
 from providers.abc import Provider
 from sqlalchemy.exc import IntegrityError
+
+
+class PushRepo:
+
+    @staticmethod
+    def get(uuid):
+        push = Push.query.filter_by(
+            uuid=uuid
+        ).one_or_none()
+
+
 
 class PushManagerRepo:
 
@@ -16,7 +27,7 @@ class PushManagerRepo:
         if isinstance(provider, Provider):
             self._provider = provider
         else:
-            raise PushManagerException("Invalid Provider")
+            raise GatlinException("Invalid Provider", 400)
 
     def get(self, uuid):
         """
@@ -26,7 +37,7 @@ class PushManagerRepo:
             uuid=uuid
         ).one_or_none()
         if pmanager is None:
-            raise PushManagerException("App not exist")
+            raise GatlinException("App not exist", 404)
         return pmanager
 
     def get_all(self):
@@ -44,10 +55,10 @@ class PushManagerRepo:
             sns_arn = self._provider.set_android_platform(android_key)
             push_manager = PushManager(android_key, self._provider.app_name, sns_arn)
             return push_manager.save()
-        except PushManagerException as exception:
+        except GatlinException as exception:
             raise exception
         except IntegrityError:
-            raise PushManagerException("Error while saving the app")
+            raise GatlinException("Error while saving the app", 400)
 
     def update(self, uuid, android_key):
         """
@@ -59,12 +70,12 @@ class PushManagerRepo:
                 uuid=uuid
             ).one_or_none()
             if pmanager is None:
-                raise PushManagerException("App not exist")
+                raise GatlinException("App not exist", 404)
             self._provider.app_name = pmanager.app_name
             sns_arn = self._provider.set_android_platform(android_key)
             pmanager.android_key = android_key
             return pmanager.save()
-        except PushManagerException as exception:
+        except GatlinException as exception:
             raise exception
 
     def delete(self, uuid):
@@ -76,8 +87,8 @@ class PushManagerRepo:
                 uuid=uuid
             ).one_or_none()
             if pmanager is None:
-                raise PushManagerException("App not exist")
+                raise GatlinException("App not exist", 404)
             self._provider.delete_platform(pmanager.sns_arn)
             pmanager.delete()
-        except PushManagerException as exception:
+        except GatlinException as exception:
             raise exception

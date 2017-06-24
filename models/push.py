@@ -31,7 +31,9 @@ class Push(db.Model, BaseModel):
     date = db.Column(db.DateTime, default=datetime.utcnow())
     manager_id = db.Column(db.Integer, db.ForeignKey("push_manager.id"), nullable=False)
     pmanager = db.relationship('PushManager', back_populates="push")
+    uuid = db.Column(db.String(36))
 
     def __init__(self, message, id_manager):
         self.message = message
         self.id_manager = id_manager
+        self.uuid = str(uuid.uuid4())
