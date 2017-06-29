@@ -1,6 +1,7 @@
 import os
 import logging
 import boto3
+from celery import Celery
 
 DEBUG = os.getenv('ENVIRONMENT') == 'DEV'
 HOST = os.getenv('APPLICATION_HOST')
@@ -22,6 +23,10 @@ POSTGRES = {
 }
 SQLLITE = 'sqlite:///' + os.path.join('test.db')
 DB_URI = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+SQS_URI = 'sqs://'
+SQS_OPTIONS = {
+    'region':os.getenv('AWS_REGION')
+}
 
 logging.basicConfig(
     filename=os.getenv('SERVICE_LOG', 'server.log'),
@@ -33,7 +38,9 @@ logging.basicConfig(
 
 sns_client = boto3.client(
     'sns',
-    aws_access_key_id=os.getenv('AWS_ACCESS_KEY'),
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
     aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
     region_name=os.getenv('AWS_REGION')
     )
+
+celery = Celery('gatlinpush', broker=SQS_URI)

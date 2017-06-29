@@ -11,3 +11,4 @@ APPLICATION_APPLICATION_ROOT=/
 AWS_ACCESS_KEY=my_aws_access_key
 AWS_SECRET_ACCESS_KEY=my_aws_secret_access_key
 AWS_REGION=us-east-1
+BROKER_TRANSPORT=sqs

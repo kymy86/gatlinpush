@@ -1,2 +1,2 @@
-from .push import PushManagerRepo
+from .push import PushManagerRepo, PushRepo
 from .installation import InstallationRepo

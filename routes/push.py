@@ -5,9 +5,9 @@ from resources import (
     PushResource,
     PushManagerResource,
     PushManagerResourceList,
-    PushSendResource
+    PushSendResource,
+    PushStatsResource
 )
-
 
 PUSH_BLUEPRINT = Blueprint('push', __name__)
 Api(PUSH_BLUEPRINT).add_resource(
@@ -29,6 +29,12 @@ Api(PUSH_BLUEPRINT).add_resource(
 )
 Api(PUSH_BLUEPRINT).add_resource(
     PushSendResource,
-    '/push/send/<string:uuid>',
+    '/push/send/<string:message_id>/<string:app_id>',
     strict_slashes=False
+)
+Api(PUSH_BLUEPRINT).add_resource(
+    PushStatsResource,
+    '/push/status/<string:task_id>',
+    strict_slashes=False,
+    endpoint='api.status'
 )
