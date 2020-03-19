@@ -87,5 +87,5 @@ class InstallationRepo:
             return installation.save()
         except GatlinException as iexc:
             raise iexc
-        except IntegrityError as ie:
+        except IntegrityError:
             raise GatlinException("This device is already registered with this app", 400)

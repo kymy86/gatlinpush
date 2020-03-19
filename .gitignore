@@ -81,6 +81,7 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+.venv/
 
 # Spyder project settings
 .spyderproject
@@ -93,3 +94,4 @@ ENV/
 tags
 server.log
 *.db
+.vscode

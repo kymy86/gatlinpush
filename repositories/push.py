@@ -107,7 +107,7 @@ class PushManagerRepo:
             if pmanager is None:
                 raise GatlinException("App not exist", 404)
             self._provider.app_name = pmanager.app_name
-            sns_arn = self._provider.set_android_platform(android_key)
+            _ = self._provider.set_android_platform(android_key)
             pmanager.android_key = android_key
             return pmanager.save()
         except GatlinException as exception:
