@@ -8,3 +8,5 @@ LICENSE
 .env.local
 logs
 tmp
+.dockerignore
+Dockerfile
