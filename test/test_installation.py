@@ -1,10 +1,10 @@
 import unittest
 import json
-import config
 
+from moto import mock_sns
+import config
 from app import app
 from models import db, Installation, PushManager
-from moto import mock_sns
 
 class TestInstallation(unittest.TestCase):
 

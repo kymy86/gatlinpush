@@ -36,5 +36,5 @@ Api(PUSH_BLUEPRINT).add_resource(
     PushStatsResource,
     '/push/status/<string:task_id>',
     strict_slashes=False,
-    endpoint='api.status'
+    endpoint='api-status'
 )

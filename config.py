@@ -1,5 +1,6 @@
 import os
 import logging
+from moto import mock_sns
 import boto3
 from celery import Celery
 
